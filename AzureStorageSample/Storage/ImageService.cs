@@ -47,5 +47,7 @@ namespace AzureStorageSample.Storage
             }
             return imageFullPath;
         }
+
+      
     }
 }

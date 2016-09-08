@@ -1,5 +1,8 @@
 ﻿using AzureStorageSample.Storage;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,12 +18,18 @@ namespace AzureStorageSample.Controllers
         // GET: Image
         public ActionResult Index()
         {
-            var LastestImage = string.Empty;
-            if(TempData["LastestImage"] != null)
+            CloudStorageAccount storageAccount = ConnectionString.GetConnectionString();
+            CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+
+            // Retrieve reference to a previously created container.
+            CloudBlobContainer container = blobClient.GetContainerReference("sampleimage");
+
+            List<string> blobs = new List<string>();
+            foreach(var blobItem in container.ListBlobs())
             {
-                ViewBag.LatestImage = Convert.ToString(TempData["LastestImage"]);
+                blobs.Add(blobItem.Uri.ToString());
             }
-            return View();
+            return View(blobs);
         }
 
         [HttpPost]
